@@ -1,28 +1,55 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="container">
+      <h1>Управление товарами</h1>
+      
+      <ProductForm />
+      
+      <ProductTable />
+      
+      <button 
+        @click="saveChanges" 
+        :disabled="!hasChanges || loading"
+        class="save-btn"
+      >
+        Сохранить
+      </button>
+
+      <AppSpinner v-if="loading" />
+      <AppNotification />
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ProductForm from './components/ProductForm.vue'
+import ProductTable from './components/ProductTable.vue'
+import AppSpinner from './components/AppSpinner.vue'
+import AppNotification from './components/AppNotification.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ProductForm,
+    ProductTable,
+    AppSpinner,
+    AppNotification
+  },
+  computed: {
+    loading() {
+      return this.$store.state.products.loading
+    },
+    hasChanges() {
+      return this.$store.state.products.hasChanges
+    }
+  },
+  mounted() {
+    this.$store.dispatch('products/loadFromLocalStorage')
+  },
+  methods: {
+    saveChanges() {
+      this.$store.dispatch('products/saveToLocalStorage')
+    }
   }
 }
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
