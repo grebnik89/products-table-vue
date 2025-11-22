@@ -20,7 +20,7 @@
           <td>{{ product.category }}</td>
           <td>{{ product.price }}</td>
           <td>{{ product.quantity }}</td>
-          <td>{{ product.quantity > 0 ? 'В наличии' : 'Нет в наличии' }}</td>
+          <td>{{ getProductStatus(product) }}</td>
           <td class="actions">
             <button 
               @click="moveProductUp(product.id)" 
@@ -56,26 +56,38 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ProductTable',
-  computed: {
-    products() {
-      return this.$store.state.products.products
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+import { State, Action } from 'vuex-class'
+import { IProduct } from '@/types/product'
+
+@Component({})
+export default class ProductTable extends Vue {
+  @State('products', { namespace: 'products' }) 
+  products!: IProduct[]
+
+  @Action('deleteProduct', { namespace: 'products' }) 
+  deleteProductAction!: any
+  
+  @Action('moveProduct', { namespace: 'products' }) 
+  moveProductAction!: any
+
+  getProductStatus(product: IProduct): string {
+    return product.quantity > 0 ? 'В наличии' : 'Нет в наличии'
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    if (confirm('Вы уверены, что хотите удалить этот товар?')) {
+      await this.deleteProductAction(id)
     }
-  },
-  methods: {
-    deleteProduct(id) {
-      if (confirm('Вы уверены, что хотите удалить этот товар?')) {
-        this.$store.dispatch('products/deleteProduct', id)
-      }
-    },
-    moveProductUp(id) {
-      this.$store.dispatch('products/moveProduct', { id, direction: 'up' })
-    },
-    moveProductDown(id) {
-      this.$store.dispatch('products/moveProduct', { id, direction: 'down' })
-    }
+  }
+
+  async moveProductUp(id: number): Promise<void> {
+    await this.moveProductAction({ id, direction: 'up' })
+  }
+
+  async moveProductDown(id: number): Promise<void> {
+    await this.moveProductAction({ id, direction: 'down' })
   }
 }
 </script>

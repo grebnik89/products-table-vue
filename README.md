@@ -8,7 +8,7 @@
 src/
 ├── components/          # Vue компоненты
 │   ├── ProductForm.vue  # Форма добавления товара
-│   ├── ProductTable.vue # Таблица товаров
+│   ├── ProductTable.vue # Таблица товаров (классы, декораторы)
 │   ├── AppSpinner.vue   # Индикатор загрузки
 │   └── AppNotification.vue # Уведомления
 ├── store/               # Vuex хранилище
