@@ -62,7 +62,7 @@ import { State, Action } from 'vuex-class'
 import { IProduct } from '@/types/product'
 
 @Component({})
-export default class ProductTable extends Vue {
+class ProductTable extends Vue {
   @State('products', { namespace: 'products' }) 
   products!: IProduct[]
 
@@ -90,6 +90,8 @@ export default class ProductTable extends Vue {
     await this.moveProductAction({ id, direction: 'down' })
   }
 }
+
+export default ProductTable
 </script>
 
 <style scoped>
